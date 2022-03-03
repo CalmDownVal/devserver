@@ -37,35 +37,30 @@ export class FileSystemResolver implements Resolver {
 	}
 
 	public async resolve(path: string) {
+		let fsPath: string | undefined;
 		let handle = null;
-		let fsPath;
 
-		if (this.cache) {
-			fsPath = this.cache.get(path);
-			if (fsPath) {
-				handle = await tryResolve(fsPath);
-				if (!handle) {
-					this.cache.delete(path);
-					this.logger.debug(`Cache miss; File no longer exists: ${fsPath}`);
-				}
-			}
+		if (this.cache &&
+			(fsPath = this.cache.get(path)) &&
+			!(handle = await tryResolve(fsPath))
+		) {
+			this.cache.delete(path);
+			this.logger.debug(`Cache invalid; File no longer exists: ${fsPath}`);
 		}
 
-		for (const root of this.roots) {
-			fsPath = join(root, path);
+		let i = 0;
+		while (!handle && i < this.roots.length) {
+			fsPath = join(this.roots[i++], path);
 			handle ??= await tryResolve(fsPath);
-			if (handle) {
-				this.cache?.set(path, fsPath);
-				break;
-			}
 		}
 
-		if (handle) {
-			this.logger.debug(`Path ${path} resolved to ${fsPath}`);
-			return handle.createReadStream();
+		if (!handle) {
+			this.logger.debug(`Could not resolve ${path}`);
+			return null;
 		}
 
-		this.logger.debug(`Could not resolve ${path}`);
-		return null;
+		this.cache?.set(path, fsPath!);
+		this.logger.debug(`Path ${path} resolved to ${fsPath}`);
+		return handle.createReadStream();
 	}
 }

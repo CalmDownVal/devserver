@@ -10,33 +10,32 @@ Example usage with [esbuild](https://github.com/evanw/esbuild).
 import { DevServer, FileSystemResolver } from '@calmdownval/devserver';
 import { build } from 'esbuild';
 
-(async () => {
-  try {
-    const server = await DevServer.start({
-      allowCors: true,
-      openBrowser: true,
-      resolver: new FileSystemResolver({
-        contentRoots: [
-          './static',
-          './build'
-        ]
-      })
-    });
+try {
+  const server = await DevServer.start({
+    allowCors: true,
+    openBrowser: true,
+    resolver: new FileSystemResolver({
+      allowCache: true,
+      contentRoots: [
+        './static',
+        './build'
+      ]
+    })
+  });
 
-    await build({
-      entryPoints: [ './src/index.ts' ],
-      outdir: './build',
-      bundle: true,
-      incremental: true,
-      watch: {
-        onRebuild(error) {
-          server.notifyReload();
-        }
+  await build({
+    entryPoints: [ './src/index.ts' ],
+    outdir: './build',
+    bundle: true,
+    incremental: true,
+    watch: {
+      onRebuild(error) {
+        server.notifyReload();
       }
-    });
-  }
-  catch (ex) {
-    console.error(ex);
-  }
-})();
+    }
+  });
+}
+catch (ex) {
+  console.error(ex);
+}
 ```

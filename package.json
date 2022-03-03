@@ -1,7 +1,7 @@
 {
 	"name": "@calmdownval/devserver",
 	"description": "A simple HTTP dev server library with live-reload.",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"license": "ISC",
 	"main": "./build/index.cjs.min.js",
 	"module": "./build/index.esm.min.mjs",
