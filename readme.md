@@ -13,7 +13,6 @@ import { build } from 'esbuild';
 try {
   const server = await DevServer.start({
     allowCors: true,
-    openBrowser: true,
     resolver: new FileSystemResolver({
       allowCache: true,
       contentRoots: [

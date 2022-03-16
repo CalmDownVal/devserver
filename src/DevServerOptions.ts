@@ -46,14 +46,6 @@ export interface DevServerOptions {
 	mimeTypes?: Record<string, string | undefined>;
 
 	/**
-	 * Controls whether to automatically open a browser window once the server
-	 * is listening.
-	 *
-	 * Defaults to `false`
-	 */
-	openBrowser?: boolean;
-
-	/**
 	 * The port to bind to.
 	 *
 	 * Defaults to zero, which makes Node choose any free port ≥8000.

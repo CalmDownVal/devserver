@@ -1,4 +1,3 @@
-import { execSync } from 'child_process';
 import { createServer, RequestListener, Server, ServerResponse, STATUS_CODES } from 'http';
 import type { AddressInfo } from 'net';
 import { extname } from 'path';
@@ -178,12 +177,7 @@ export class DevServer {
 			server.once('error', reject);
 			server.once('listening', () => {
 				try {
-					const devServer = new DevServer(server, options);
-					if (options.openBrowser) {
-						execSync(`open ${devServer.url}`);
-					}
-
-					resolve(devServer);
+					resolve(new DevServer(server, options));
 				}
 				catch (ex) {
 					reject(ex);
