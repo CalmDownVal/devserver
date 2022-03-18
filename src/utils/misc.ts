@@ -6,8 +6,9 @@ export function getListenerScriptTag(endpointUrl: string) {
 	return `\
 <script type="text/javascript">
 (src => {
-	src.addEventListener('error', e => console.error('DevServer: disconnected', e));
-	src.addEventListener('open', () => console.info('DevServer: connected'));
+	let isConnected = false;
+	src.addEventListener('open', () => { !isConnected && console.info('DevServer: connected'), isConnected = true; });
+	src.addEventListener('error', () => { isConnected && console.warn('DevServer: disconnected'), isConnected = false; });
 	src.addEventListener('message', () => window.location.reload());
 })(new EventSource('${endpointUrl}'));
 </script>
