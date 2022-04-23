@@ -139,7 +139,10 @@ export class DevServer {
 				return;
 			}
 
-			const ext = extname(path).slice(1);
+			const ext = extname(path)
+				.slice(1)
+				.toLowerCase();
+
 			response.setHeader(header.contentType, this.mimeTypes[ext] ?? mimeType.binary);
 
 			const pipeOptions = {
@@ -147,7 +150,7 @@ export class DevServer {
 			};
 
 			if (this.injectPattern.test(path)) {
-				pipeOptions.end = true;
+				pipeOptions.end = false;
 				source.on('end', () => {
 					const injectedHtml = getListenerScriptTag(`${this.url}${EVENT_SOURCE_PATH}`);
 					response.end(injectedHtml, 'utf8');
