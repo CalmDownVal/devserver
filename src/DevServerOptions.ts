@@ -24,12 +24,19 @@ export interface DevServerOptions {
 	indexFileName?: string;
 
 	/**
-	 * Regular expression to match files to which a <script> tag with hot reload
+	 * Regular expression to match files to which a <script> tag with livereload
 	 * logic will be injected.
 	 *
-	 * Defaults to `/\.html$/i`
+	 * Defaults to `/\.html?$/i`
 	 */
 	injectPattern?: RegExp;
+
+	/**
+	 * The path at which event stream for the livereload mechanism is hosted.
+	 *
+	 * Defaults to `'/?events'`
+	 */
+	eventSourcePath?: string;
 
 	/**
 	 * An optional logger facade to forward logging to.

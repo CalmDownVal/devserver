@@ -36,6 +36,7 @@ export class DevServer {
 	private readonly allowCors: boolean;
 	private readonly indexFileName: string;
 	private readonly injectPattern: RegExp;
+	private readonly eventSourcePath: string;
 	private readonly listeners = new Set<ServerResponse>();
 	private readonly logger: Logger;
 	private readonly mimeTypes: Record<string, string | undefined>;
@@ -53,7 +54,8 @@ export class DevServer {
 
 		this.allowCors = options.allowCors ?? false;
 		this.indexFileName = options.indexFileName ?? 'index.html';
-		this.injectPattern = options.injectPattern ?? /.html$/i;
+		this.injectPattern = options.injectPattern ?? /.html?$/i;
+		this.eventSourcePath = options.eventSourcePath ?? '/?events';
 		this.logger = options.logger ?? defaultLogger;
 		this.resolver = options.resolver;
 		this.mimeTypes = {
@@ -62,6 +64,7 @@ export class DevServer {
 		};
 
 		server.on('request', this.onRequest);
+		server.on('error', this.onError);
 		this.logger.info(`DevServer now listening at ${this.url}`);
 	}
 
@@ -112,7 +115,7 @@ export class DevServer {
 				return;
 			}
 
-			if (request.url === EVENT_SOURCE_PATH) {
+			if (request.url === this.eventSourcePath) {
 				response.setHeader(header.contentType, mimeType.eventStream);
 				response.flushHeaders();
 
@@ -152,7 +155,7 @@ export class DevServer {
 			if (this.injectPattern.test(path)) {
 				pipeOptions.end = false;
 				source.on('end', () => {
-					const injectedHtml = getListenerScriptTag(`${this.url}${EVENT_SOURCE_PATH}`);
+					const injectedHtml = getListenerScriptTag(`${this.url}${this.eventSourcePath}`);
 					response.end(injectedHtml, 'utf8');
 				});
 			}
@@ -169,6 +172,10 @@ export class DevServer {
 		}
 	};
 
+	private readonly onError = (ex: Error) => {
+		this.logger.error('An error occurred within the HTTP server.', ex);
+	};
+
 	/**
 	 * Creates a new DevServer using the provided options. Returns a promise
 	 * that resolves once the server successfully binds to a port and starts
@@ -180,6 +187,7 @@ export class DevServer {
 			server.once('error', reject);
 			server.once('listening', () => {
 				try {
+					server.off('error', reject);
 					resolve(new DevServer(server, options));
 				}
 				catch (ex) {
