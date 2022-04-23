@@ -44,11 +44,12 @@ export interface DevServerOptions {
 	logger?: Logger;
 
 	/**
-	 * A mapping of lowercase file extensions to their MIME-Type string. Files
-	 * with unknown extensions will be served as application/octet-stream by
+	 * A mapping of *lowercase* file extensions to their MIME-Type string. Files
+	 * with unknown extensions will be served as `application/octet-stream` by
 	 * default.
 	 *
-	 * By default HTML, JS, MJS and CSS files are recognized.
+	 * By default the following file extensions are recognized:
+	 * html, htm, js, mjs, cjs, css, jpg, jpeg, png, svg, webp
 	 */
 	mimeTypes?: Record<string, string | undefined>;
 

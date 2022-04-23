@@ -5,17 +5,8 @@ import { extname } from 'path';
 import type { DevServerOptions } from './DevServerOptions';
 import { defaultLogger, Logger } from './Logger';
 import type { Resolver } from './Resolver';
-import { header, mimeType, statusCode } from './utils/constants';
+import { defaultMimeTypeMapping, header, mimeType, statusCode } from './utils/constants';
 import { getListenerScriptTag, handleCors, removeQueryString } from './utils/misc';
-
-const EVENT_SOURCE_PATH = '/?events';
-const DEFAULT_MIME_TYPES = {
-	css: mimeType.stylesheet,
-	html: mimeType.hypertext,
-	htm: mimeType.hypertext,
-	js: mimeType.javaScript,
-	mjs: mimeType.javaScript
-};
 
 export class DevServer {
 	/**
@@ -59,7 +50,7 @@ export class DevServer {
 		this.logger = options.logger ?? defaultLogger;
 		this.resolver = options.resolver;
 		this.mimeTypes = {
-			...DEFAULT_MIME_TYPES,
+			...defaultMimeTypeMapping,
 			...options.mimeTypes
 		};
 

@@ -1,3 +1,5 @@
+export * from './utils/constants';
+export * from './utils/misc';
 export * from './DevServer';
 export * from './DevServerOptions';
 export * from './FileSystemResolver';
