@@ -1,8 +1,8 @@
+import terser from '@rollup/plugin-terser';
 import typescript from '@rollup/plugin-typescript';
 import del from 'rollup-plugin-delete';
 import definitions from 'rollup-plugin-dts';
-import externals from 'rollup-plugin-node-externals';
-import { terser } from 'rollup-plugin-terser';
+import { nodeExternals } from 'rollup-plugin-node-externals';
 
 const minified = {
 	sourcemap: true,
@@ -15,6 +15,7 @@ const minified = {
 	]
 };
 
+// eslint-disable-next-line import/no-default-export
 export default [
 	{
 		input: './src/index.ts',
@@ -35,7 +36,7 @@ export default [
 				runOnce: true,
 				targets: './build/*'
 			}),
-			externals(),
+			nodeExternals(),
 			typescript()
 		]
 	},
@@ -46,7 +47,7 @@ export default [
 			format: 'es'
 		},
 		plugins: [
-			externals(),
+			nodeExternals(),
 			definitions()
 		]
 	}

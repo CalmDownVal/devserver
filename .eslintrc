@@ -2,16 +2,11 @@
 	"root": true,
 	"extends": [
 		"@calmdownval/eslint-config",
-		"@calmdownval/eslint-config/typescript"
+		"@calmdownval/eslint-config/import",
+		"@calmdownval/eslint-config/typescript",
+		"@calmdownval/eslint-config/typescript-import"
 	],
 	"env": {
-		"es6": true,
 		"node": true
-	},
-	"rules": {
-		"require-atomic-updates": "off"
-	},
-	"ignorePatterns": [
-		"rollup.config.js"
-	]
+	}
 }

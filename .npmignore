@@ -1,6 +1,9 @@
+.vscode
+.yarn
 src
 .editorconfig
 .eslintrc
-rollup.config.js
+.yarnrc.yml
+rollup.config.mjs
 tsconfig.json
 yarn.lock
