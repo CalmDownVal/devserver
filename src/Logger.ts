@@ -1,21 +1,26 @@
-/* eslint-disable no-console */
-
 export interface Logger {
-	debug(message: string, ...extra: unknown[]): void;
-	info(message: string, ...extra: unknown[]): void;
-	error(message: string, ...extra: unknown[]): void;
+	debug(message: string): void;
+	info(message: string): void;
+	warn(message: string): void;
+	error(message: string): void;
 }
 
-const noop = () => {};
+function createLogCallback(verb: 'debug' | 'info' | 'warn' | 'error') {
+	const level = verb.toUpperCase();
+	return (message: string) => {
+		// eslint-disable-next-line no-console
+		console[verb](`[${level}][DevServer]: ${message}`);
+	};
+}
 
 /**
- * The default logger; Only outputs errors to the console and drops everything
- * else.
+ * The default logger set to output severities INFO and up.
  */
 export const defaultLogger: Logger = {
-	debug: noop,
-	info: noop,
-	error(message, ...extra) {
-		console.error('[Error][DevServer]:', message, ...extra);
-	}
+	debug() {
+		// no-op
+	},
+	info: createLogCallback('info'),
+	warn: createLogCallback('warn'),
+	error: createLogCallback('error')
 };

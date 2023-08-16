@@ -160,7 +160,7 @@ export class DevServer {
 			source.pipe(response, pipeOptions);
 		}
 		catch (ex: unknown) {
-			this.logger.error('An error occurred while handling a request:', ex);
+			this.logger.error('An error occurred while handling a request:\n' + ex);
 			response.statusCode = statusCode.internalServerError;
 			response.end();
 		}
@@ -171,7 +171,7 @@ export class DevServer {
 	};
 
 	private readonly onError = (ex: Error) => {
-		this.logger.error('An error occurred within the HTTP server.', ex);
+		this.logger.error('An error occurred within the HTTP server.\n' + ex);
 	};
 
 	/**
