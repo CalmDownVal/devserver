@@ -1,6 +1,6 @@
 import terser from '@rollup/plugin-terser';
 import typescript from '@rollup/plugin-typescript';
-import del from 'rollup-plugin-delete';
+import deleteBeforeBuild from 'rollup-plugin-delete';
 import definitions from 'rollup-plugin-dts';
 import { nodeExternals } from 'rollup-plugin-node-externals';
 
@@ -32,7 +32,7 @@ export default [
 			}
 		],
 		plugins: [
-			del({
+			deleteBeforeBuild({
 				runOnce: true,
 				targets: './build/*'
 			}),
