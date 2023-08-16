@@ -1,6 +1,6 @@
 # DevServer
 
-A simple HTTP dev server library with live-reload.
+A simple development server with livereload.
 
 ## Example Usage
 
@@ -22,17 +22,30 @@ try {
     })
   });
 
-  await build({
+  const hotReloadPlugin = {
+    name: 'hot-reload',
+    setup(build) {
+      build.onEnd(result => {
+        const { errors: { length: errors }, warnings: { length: warnings } } = result;
+        if (errors > 0) {
+          console.error(`build failed with ${errors} errors and ${warnings} warnings.`);
+        }
+        else {
+          console.info(`build succeeded with ${warnings} warnings.`);
+          server.notifyReload();
+        }
+      });
+    }
+  };
+
+  const context = await esbuild.context({
     entryPoints: [ './src/index.ts' ],
     outdir: './build',
     bundle: true,
-    incremental: true,
-    watch: {
-      onRebuild(error) {
-        server.notifyReload();
-      }
-    }
+    plugins: [ hotReloadPlugin ]
   });
+
+  await context.watch();
 }
 catch (ex) {
   console.error(ex);
