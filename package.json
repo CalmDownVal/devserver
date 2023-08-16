@@ -23,8 +23,7 @@
 	],
 	"scripts": {
 		"build": "rollup --config rollup.config.mjs",
-		"lint": "eslint ./src/**/*.ts",
-		"prepublishOnly": "yarn build"
+		"lint": "eslint ./src/**/*.ts"
 	},
 	"devDependencies": {
 		"@calmdownval/eslint-config": "2.0.4",
