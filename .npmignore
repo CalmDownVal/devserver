@@ -3,6 +3,8 @@
 src
 .editorconfig
 .eslintrc
+.pnp.cjs
+.pnp.loader.mjs
 .yarnrc.yml
 rollup.config.mjs
 tsconfig.json
