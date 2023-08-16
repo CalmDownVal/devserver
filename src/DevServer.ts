@@ -1,9 +1,9 @@
-import { createServer, RequestListener, Server, ServerResponse, STATUS_CODES } from 'http';
-import type { AddressInfo } from 'net';
-import { extname } from 'path';
+import { createServer, STATUS_CODES, type RequestListener, type Server, type ServerResponse } from 'node:http';
+import type { AddressInfo } from 'node:net';
+import { extname } from 'node:path';
 
 import type { DevServerOptions } from './DevServerOptions';
-import { defaultLogger, Logger } from './Logger';
+import { defaultLogger, type Logger } from './Logger';
 import type { Resolver } from './Resolver';
 import { defaultMimeTypeMapping, header, mimeType, statusCode } from './utils/constants';
 import { getListenerScriptTag, handleCors, removeQueryString } from './utils/misc';
@@ -68,14 +68,18 @@ export class DevServer {
 			this.server.close(error => {
 				if (error) {
 					reject(error);
+					return;
 				}
-				else {
-					resolve();
-				}
-			});
 
-			this.listeners.forEach(listener => listener.end());
-			this.listeners.clear();
+				let count = this.listeners.size;
+				this.listeners.forEach(listener => {
+					listener.end(() => {
+						if (--count === 0) {
+							resolve();
+						}
+					});
+				});
+			});
 		});
 	}
 
@@ -95,6 +99,7 @@ export class DevServer {
 	}
 
 	private readonly onRequest: RequestListener = async (request, response) => {
+		const startTime = process.hrtime.bigint();
 		try {
 			if (this.allowCors && handleCors(request, response)) {
 				return;
@@ -128,6 +133,7 @@ export class DevServer {
 
 			const source = await this.resolver.resolve(path);
 			if (!source) {
+				// eslint-disable-next-line require-atomic-updates
 				response.statusCode = statusCode.notFound;
 				response.end();
 				return;
@@ -153,13 +159,14 @@ export class DevServer {
 
 			source.pipe(response, pipeOptions);
 		}
-		catch (ex: any) {
+		catch (ex: unknown) {
 			this.logger.error('An error occurred while handling a request:', ex);
 			response.statusCode = statusCode.internalServerError;
 			response.end();
 		}
 		finally {
-			this.logger.info(`${request.method} ${request.url} -> ${response.statusCode} ${STATUS_CODES[response.statusCode]}`);
+			const timeTaken = Number((process.hrtime.bigint() - startTime) / 1_000_000n);
+			this.logger.info(`${request.method} ${request.url} -> ${response.statusCode} ${STATUS_CODES[response.statusCode]} (${timeTaken}ms)`);
 		}
 	};
 

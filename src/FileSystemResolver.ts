@@ -1,8 +1,8 @@
-import { open } from 'fs/promises';
-import { join, resolve } from 'path';
+import { open } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 
 import type { FileSystemResolverOptions } from './FileSystemResolverOptions';
-import { defaultLogger, Logger } from './Logger';
+import { defaultLogger, type Logger } from './Logger';
 import type { Resolver } from './Resolver';
 
 async function tryResolve(path: string) {

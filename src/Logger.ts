@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 
 export interface Logger {
-	debug(message: string, ...extra: any): void;
-	info(message: string, ...extra: any): void;
-	error(message: string, ...extra: any): void;
+	debug(message: string, ...extra: unknown[]): void;
+	info(message: string, ...extra: unknown[]): void;
+	error(message: string, ...extra: unknown[]): void;
 }
 
 const noop = () => {};

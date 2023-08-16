@@ -1,16 +1,18 @@
 {
 	"compilerOptions": {
+		"isolatedModules": true,
 		"lib": [
 			"ESNext"
 		],
 		"module": "ESNext",
-		"moduleResolution": "Node",
+		"moduleResolution": "Bundler",
+		"noEmit": true,
 		"skipLibCheck": true,
 		"strict": true,
+		"target": "ESNext",
 		"types": [
 			"node"
-		],
-		"target": "ESNext"
+		]
 	},
 	"include": [
 		"./src/**/*"
